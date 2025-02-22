@@ -28,7 +28,7 @@ const changeFilter = (filter: Filter) => {
           :filter="filter"
           :stats="props.stats"
           :active-filter="props.activeFilter"
-          @click="changeFilter(el)"
+          @click="changeFilter(filter)"
       />
     </section>
   </aside>
