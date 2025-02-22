@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import {PropType, defineProps, defineEmits} from "vue";
 import AppTodoItem from "@/components/todo/AppTodoItem.vue";
-import {Todo} from "@/types/todo";
+import {Film} from "@/types/Films";
+import {TodoActions} from "@/types/TodoEmits";
 
 const props = defineProps({
   todos: {
-    type: Array as PropType<Todo[]>,
+    type: Array as PropType<Film[]>,
     required: true,
   }
 })
 
-const emit = defineEmits<(e: 'toggleTodo' | 'removeTodo', id: number) => void>();
+const emit = defineEmits<(e: TodoActions, id: number) => void>();
 
 const toggleTodo = (id: number) => {
   emit('toggleTodo', id)

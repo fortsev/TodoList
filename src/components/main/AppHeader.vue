@@ -1,6 +1,6 @@
 <template>
   <header class="app-header">
-    <span class="app-header__logo">TODOS</span>
+    <span class="app-header__logo">КИНОЛИСТ</span>
   </header>
 </template>
 

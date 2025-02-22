@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import {PropType, defineProps, defineEmits} from "vue";
-import {Todo} from "@/types/todo";
-
+import {Film} from "@/types/Films";
+import {TodoActions} from "@/types/TodoEmits";
 
 const props = defineProps({
   todo: {
-    type: Object as PropType<Todo>,
+    type: Object as PropType<Film>,
     required: true,
   }
 })
 
 const emit = defineEmits<(
-    e: 'toggleTodo' | 'removeTodo', id: number) => void
+    e: TodoActions, id: number) => void
 >()
 
 const toggleTodo = () => {
@@ -23,11 +23,11 @@ const removeTodo = () => {
 </script>
 
 <template>
-  <li class="todo-item" :class="{ 'todo-item--done': todo.completed }" @click="toggleTodo">
+  <li class="todo-item" :class="{ 'todo-item--done': todo.viewed }" @click="toggleTodo">
     <div class="todo-item__status">
       <i class="bi bi-check2"></i>
     </div>
-    <span class="todo-item__text">{{ todo.text }}</span>
+    <span class="todo-item__text" :title="todo.description">{{ todo.name }} ({{ todo.year }})</span>
     <button class="todo-item__remove-button" @click.stop="removeTodo">
       <i class="bi bi-trash3"></i>
     </button>

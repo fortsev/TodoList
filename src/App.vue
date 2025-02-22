@@ -1,32 +1,34 @@
 <script setup lang="ts">
 import {ref, computed} from "vue";
 import AppHeader from "@/components/main/AppHeader.vue";
-import AppFilters from "@/components/AppFilters.vue";
+import AppFilters from "@/components/filter/AppFilters.vue";
 import AppTodoList from "@/components/todo/AppTodoList.vue";
 import AppAddTodo from "@/components/AppAddTodo.vue";
-import AppFooter from "@/components/main/AppFooter.vue";
-import {Todo} from "@/types/todo";
+import {Film} from "@/types/Films";
 import {Filter} from "@/types/Filters";
 import {Stats} from "@/types/Stats";
 
-const todos = ref<Todo[]>([
-  {id: 0, text: 'hello', completed: true},
-  {id: 1, text: 'world', completed: false},
-  {id: 2, text: 'vue', completed: false},
+const todos = ref<Film[]>([])
+
+const activeTodos = computed<Film[]>(() => {
+  return todos.value.filter(el => !el.viewed)
+})
+
+const doneTodos = computed<Film[]>(() => {
+  return todos.value.filter(el => el.viewed)
+})
+
+const filters = ref<Filter[]>([
+  { code: 'all', name: 'Все' },
+  { code: 'active', name: 'Буду смотреть' },
+  { code: 'done', name: 'Уже посмотрел' },
 ])
-const activeFilter = ref<Filter>('All')
 
-const activeTodos = computed<Todo[]>(() => {
-  return todos.value.filter(el => !el.completed)
-})
+const activeFilter = ref<Filter>(filters.value[0])
 
-const doneTodos = computed<Todo[]>(() => {
-  return todos.value.filter(el => el.completed)
-})
-
-const filterTodos = computed<Todo[]>(() => {
-  if (activeFilter.value === 'Active') return activeTodos.value;
-  if (activeFilter.value === 'Done') return doneTodos.value;
+const filterTodos = computed<Film[]>(() => {
+  if (activeFilter.value.code === 'active') return activeTodos.value;
+  if (activeFilter.value.code === 'done') return doneTodos.value;
   return todos.value
 })
 
@@ -38,19 +40,23 @@ const stats = computed<Stats>(() => {
 })
 
 const toggleTodo = (id: number) => {
-  const targetTodo = todos.value.find((todo: Todo) => todo.id === id)
+  const targetTodo = todos.value.find((todo: Film) => todo.id === id)
 
   if (targetTodo) {
-    targetTodo.completed = !targetTodo.completed
+    targetTodo.viewed = !targetTodo.viewed
   }
 }
 
 const removeTodo = (id: number) => {
-  todos.value = todos.value.filter((todo: Todo) => todo.id !== id)
+  todos.value = todos.value.filter((todo: Film) => todo.id !== id)
 }
 
-const addTodo = (todo: Todo) => {
-  todos.value.push(todo)
+const addTodo = (film: Film) => {
+  if (todos.value.includes(film)) {
+    alert('Этот фильм уже есть в вашем списке')
+    return
+  }
+  todos.value.push(film)
 }
 
 const changeActiveFilter = (filter: Filter) => {
@@ -59,13 +65,12 @@ const changeActiveFilter = (filter: Filter) => {
 </script>
 
 <template>
-  <app-header/>
-  <app-filters :active-filter="activeFilter" @changeActiveFilter="changeActiveFilter"/>
+  <app-header />
+  <app-filters :filters="filters" :active-filter="activeFilter" :stats="stats" @changeActiveFilter="changeActiveFilter"/>
   <main class="app-main">
     <app-todo-list :todos="filterTodos" @toggleTodo="toggleTodo" @removeTodo="removeTodo"/>
     <app-add-todo @addTodo="addTodo"/>
   </main>
-  <app-footer :stats="stats"/>
 </template>
 
 <style>

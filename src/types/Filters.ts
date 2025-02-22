@@ -1,1 +1,4 @@
-export type Filter = 'All' | 'Active' | 'Done'
+export interface Filter {
+    code: "all" | "active" | "done",
+    name: string,
+}

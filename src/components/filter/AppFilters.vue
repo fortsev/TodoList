@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import {ref, defineEmits, defineProps} from "vue";
+import {defineEmits, defineProps} from "vue";
+import AppFilterButton from "@/components/filter/AppFilterButton.vue";
 import {Filter} from "@/types/Filters";
+import {Stats} from "@/types/Stats";
 
 const props = defineProps<{
   activeFilter: Filter;
+  filters: Filter[];
+  stats: Stats;
 }>();
-
-const filters = ref<Filter[]>(['All', 'Active', 'Done'])
 
 const emit = defineEmits({
   changeActiveFilter: (filter: Filter) => filter
@@ -20,14 +22,14 @@ const changeFilter = (filter: Filter) => {
 <template>
   <aside class="app-filters">
     <section class="toggle-group">
-      <button
-          v-for="(el, i) in filters"
-          :key="i"
-          class="button"
-          :class="{'button--primary': props.activeFilter === el}"
-          @click="changeFilter(el)">
-        {{ el }}
-      </button>
+      <app-filter-button
+          v-for="filter in filters"
+          :key="filter.code"
+          :filter="filter"
+          :stats="props.stats"
+          :active-filter="props.activeFilter"
+          @click="changeFilter(el)"
+      />
     </section>
   </aside>
 </template>
