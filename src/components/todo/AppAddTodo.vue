@@ -1,30 +1,30 @@
 <script setup lang="ts">
-import {ref, defineEmits} from "vue";
-import {Film} from "@/types/Films";
+import { ref, defineEmits } from "vue";
+import { Film } from "@/types/Films";
 import films from "@/api/services/films";
 import AppTodoItem from "@/components/todo/AppTodoItem.vue";
 
 const isFormVisible = ref<boolean>(false);
-const searchText = ref<string>('');
+const searchText = ref<string>("");
 
-const emits = defineEmits<(e: 'addTodo', film: Film) => void>();
+const emits = defineEmits<(e: "addTodo", film: Film) => void>();
 
-const addTodo = (film:Film) => {
-  emits('addTodo', film)
-  searchText.value = '';
+const addTodo = (film: Film) => {
+  emits("addTodo", film);
+  searchText.value = "";
   closeForm();
-}
+};
 
-const searchResult = ref<Film[]>([])
+const searchResult = ref<Film[]>([]);
 
 const searchFilm = async () => {
   try {
-    const res = await films.searchMovie(searchText.value)
-    searchResult.value = res.data.docs
+    const res = await films.searchMovie(searchText.value);
+    searchResult.value = res.data.docs;
   } catch (e) {
-    console.error('Ошибка при выполнении запроса поиска, ', e)
+    console.error("Ошибка при выполнении запроса поиска, ", e);
   }
-}
+};
 
 let timeoutId: number | null = null;
 
@@ -39,25 +39,33 @@ const debounceSearch = () => {
 
 const showForm = () => {
   isFormVisible.value = true;
-}
+};
 
 const closeForm = () => {
   isFormVisible.value = false;
-  searchResult.value = []
-}
+  searchResult.value = [];
+};
 </script>
 
 <template>
   <section class="add-todo">
     <div v-if="isFormVisible" class="add-todo__form">
-      <button class="close-button" type="button" @click="closeForm">
-        <i class="bi bi-x"></i>
-      </button>
+      <div class="add-todo__head">
+        <span>Введите название фильма</span>
+        <button class="close-button" type="button" @click="closeForm">
+          <i class="bi bi-x"></i>
+        </button>
+      </div>
       <div class="text-input text-input--focus">
-        <input v-model="searchText" class="input" @input="debounceSearch"/>
+        <input v-model="searchText" class="input" @input="debounceSearch" />
       </div>
       <div v-if="searchResult.length > 0" class="add-todo__films">
-        <app-todo-item v-for="film in searchResult" :key="film.id" :todo="film" @click="addTodo(film)" />
+        <app-todo-item
+          v-for="film in searchResult"
+          :key="film.id"
+          :todo="film"
+          @click="addTodo(film)"
+        />
       </div>
     </div>
     <button v-else class="add-todo__show-form-button" @click="showForm">
@@ -104,6 +112,11 @@ const closeForm = () => {
     }
   }
 
+  &__head {
+    display: flex;
+    justify-content: space-between;
+  }
+
   &__films {
     display: flex;
     flex-direction: column;
@@ -136,10 +149,10 @@ const closeForm = () => {
   }
 
   &--search::after {
-    content: '\F52A';
+    content: "\F52A";
     font-family: bootstrap-icons !important;
     font-size: 1.7rem;
-    color: var(--primary-color)
+    color: var(--primary-color);
   }
 }
 </style>
